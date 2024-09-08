@@ -1,13 +1,15 @@
 "use client";
 
-import { cn } from '@/utils/cn';
+import { cn } from "@/lib/utils";
 import React, { useCallback, useMemo, useState } from 'react';
 import { Button } from '../../../components/ui/button';
 import { format, isEqual, startOfMonth, startOfWeek, toDate } from 'date-fns';
 import HeaderBar from './header_bar';
+import { Input } from '@/components/ui/input';
+import Cell from "./cell";
 
 
-type activityData = {
+export type activityData = {
     id: number
     date: string
     group: string
@@ -15,12 +17,18 @@ type activityData = {
     value: string
 }
 
-type activityDataByTitle = {
+export type activityDataByTitle = {
     group: string
     activity: {
         title: string
         data: activityData[];
     }[]
+}
+
+export type SelectedCell = {
+    activity_i: number;
+    group_i: number;
+    activityDate: Date;
 }
 
 
@@ -94,6 +102,12 @@ const OuterBorderHighlightByRow = () => {
     const [state, setState] = useState({
         selectedColumn: -1,
         datesInMonth: [] as Date[],
+        editCell: Boolean(false),
+        selectedCell: {
+            activity_i: -1, 
+            group_i: -1,
+            activityDate: new Date()
+        }
     });
 
 
@@ -101,8 +115,8 @@ const OuterBorderHighlightByRow = () => {
 
     // console.log(dateObj)
 
-    const headerStyle = `flex justify-center items-center h-5 flex-grow bg-gray-100 cursor-pointer min-w-14 h-12 z-10`
-    const rowStyle = `flex items-center justify-center h-5 flex-grow bg-gray-100 min-w-14`
+    const headerStyle = `flex justify-center items-center h-5  bg-gray-100 cursor-pointer min-w-14 h-12 z-10`
+    const rowStyle = `flex items-center justify-center h-5 bg-gray-100 min-w-14`
 
 
     const groupedData = useMemo(() => getGroupByGroup(shifts), [shifts]);
@@ -116,6 +130,8 @@ const OuterBorderHighlightByRow = () => {
         },
         [setState]
     );
+
+    console.log("state.selectedCell.activity_i", state.selectedCell.activity_i)
 
     return (
         <>
@@ -170,22 +186,25 @@ const OuterBorderHighlightByRow = () => {
 
 
                                 {state.datesInMonth.map((dateInMonth, i) => (
-                                    <>
-                                        <div className={cn(
-                                            rowStyle,
-                                            `hover:bg-sky-100 cursor-pointer`,
-                                            state.selectedColumn === i
-                                                ? `border-sky-600 border-l-2 border-r-2 border-t-gray-200 border-t ${groupedData.length - 1 === group_i && group.activity.length - 1 === activity_i && "border-b-2"}`
-                                                : "border-gray-200 border-l border-t")}
-                                            onClick={() => {
-                                                console.log(`Cell clicked: ${item.title}, Date: ${format(dateInMonth, "yyyy-MM-dd")}`);
-                                            }}
-                                        >
-
-                                            <p className={`text-center font-semibold`}>{item.data.find((activity) => format(toDate(activity.date), "yyyy-MM-dd") === format(dateInMonth, "yyyy-MM-dd") && activity.title === item.title)?.value}</p>
-
-                                        </div>
-                                    </>
+                             
+                                    <Cell 
+                                        rowStyle={rowStyle} 
+                                        ParentState={state} 
+                                        groupedData={groupedData} 
+                                        dateInMonth={dateInMonth} 
+                                        group={group} 
+                                        item={item} 
+                                        activity_i={activity_i} 
+                                        group_i={group_i} 
+                                        i={i}
+                                        selectedCell={state.selectedCell}
+                                        setSelectedCell={(newSelectedCell: SelectedCell) => {                        
+                                            setState((prev) => ({
+                                                ...prev,
+                                                selectedCell: newSelectedCell
+                                            }));
+                                        }}                             
+                                        />
                                 ))}
 
                             </div>
