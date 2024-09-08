@@ -1,7 +1,7 @@
 "use client";
 
 import { cn } from '@/utils/cn';
-import React, { useMemo, useState } from 'react';
+import React, { useCallback, useMemo, useState } from 'react';
 import { Button } from '../../../components/ui/button';
 import { format, isEqual, startOfMonth, startOfWeek, toDate } from 'date-fns';
 import HeaderBar from './header_bar';
@@ -15,21 +15,30 @@ type activityData = {
     value: string
 }
 
-type activityDataByTitle ={
+type activityDataByTitle = {
     group: string
-    data: activityData[];
-
-
+    activity: {
+        title: string
+        data: activityData[];
+    }[]
 }
 
-const shifts: activityData[] = [    
-    { id: 0, date: '2024-09-03', group: 'ACUITY',   title: "1:1",                   value: '10' },
-    { id: 1, date: '2024-09-04', group: 'ACUITY',   title: "1:2",                   value: '4.5' },
-    { id: 2, date: '2024-09-05', group: 'ACUITY',   title: "2:1",                   value: '10' },
-    { id: 3, date: '2024-09-06', group: 'STAFF',    title: "DAY SHIFT",             value: '12' },
-    { id: 4, date: '2024-09-07', group: 'STAFF',    title: "SICK",                  value: '15' },
-    { id: 5, date: '2024-09-08', group: 'KPI',      title: "OUT OF HOURS D/C",      value: '7' },
-    { id: 6, date: '2024-09-09', group: 'KPI',      title: "INABILITY TO ADMIT",    value: '8' },
+
+const shifts: activityData[] = [
+    { id: 0,    date: '2024-09-01',     group: 'ACUITY',    title: "1:1",                   value: '10' },
+    { id: 1,    date: '2024-09-01',     group: 'ACUITY',    title: "1:2",                   value: '4.5' },
+    { id: 2,    date: '2024-09-01',     group: 'ACUITY',    title: "2:1",                   value: '9' },
+    { id: 3,    date: '2024-09-01',     group: 'STAFF',     title: "DAY SHIFT",             value: '12' },
+    { id: 4,    date: '2024-09-01',     group: 'STAFF',     title: "SICK",                  value: '15' },
+    { id: 5,    date: '2024-09-01',     group: 'KPI',       title: "OUT OF HOURS D/C",      value: '7' },
+    { id: 6,    date: '2024-09-01',     group: 'KPI',       title: "INABILITY TO ADMIT",    value: '8' },
+    { id: 8,    date: '2024-09-02',     group: 'ACUITY',    title: "1:2",                   value: '5' },
+    { id: 9,    date: '2024-09-02',     group: 'ACUITY',    title: "2:1",                   value: '10' },
+    { id: 10,   date: '2024-09-02',     group: 'STAFF',     title: "SICK",                  value: '14' },
+    { id: 11,   date: '2024-09-02',     group: 'KPI',       title: "OUT OF HOURS D/C",      value: '8' },
+    { id: 12,   date: '2024-09-02',     group: 'KPI',       title: "INABILITY TO ADMIT",    value: '9' },
+    { id: 13,   date: '2024-10-03',     group: 'ACUITY',    title: "1:2",                   value: '7' },
+    { id: 14,   date: '2024-10-03',     group: 'ACUITY',    title: "2:1",                   value: '8' },
 
     // Add more shift data as needed...
 ];
@@ -37,15 +46,30 @@ const shifts: activityData[] = [
 
 const getGroupByGroup = (shifts: activityData[]): activityDataByTitle[] => {
     return shifts.reduce<activityDataByTitle[]>((acc, item) => {
-      let group = acc.find(r => r.group === item.group);
-      if (!group) {
-        group = { group: item.group, data: [] };
-        acc.push(group);
-      }
-      group.data.push(item);
-      return acc;
+        // Find if group already exists in the accumulator
+        let group = acc.find((g) => g.group === item.group);
+
+        // If group doesn't exist, create a new one
+        if (!group) {
+            group = { group: item.group, activity: [] };
+            acc.push(group);
+        }
+
+        // Find if title exists within the group's activity
+        let title = group.activity.find((t) => t.title === item.title);
+
+        // If title doesn't exist, create a new one
+        if (!title) {
+            title = { title: item.title, data: [] };
+            group.activity.push(title);
+        }
+
+        // Add the current item to the title's data array
+        title.data.push(item);
+
+        return acc;
     }, []);
-  };
+};
 
 
 
@@ -68,15 +92,12 @@ function dateConverter(date: string) {
 const OuterBorderHighlightByRow = () => {
 
     const [state, setState] = useState({
-        selectedColumn: 0,
+        selectedColumn: -1,
         datesInMonth: [] as Date[],
     });
 
-   
-// console.log("getGroupByTitle", getGroupByTitle)
 
-
-    const dateObj = new Date().toLocaleDateString('en-GB').split('/').reverse().join('-');
+    // console.log("getGroupByTitle", getGroupByTitle)
 
     // console.log(dateObj)
 
@@ -84,7 +105,17 @@ const OuterBorderHighlightByRow = () => {
     const rowStyle = `flex items-center justify-center h-5 flex-grow bg-gray-100 min-w-14`
 
 
-    const groupedShifts = useMemo(() => getGroupByGroup(shifts), [shifts]);
+    const groupedData = useMemo(() => getGroupByGroup(shifts), [shifts]);
+
+    const handleHeaderClick = useCallback(
+        (i: number) => {
+            setState((prev) => ({
+                ...prev,
+                selectedColumn: i
+            }));
+        },
+        [setState]
+    );
 
     return (
         <>
@@ -94,15 +125,15 @@ const OuterBorderHighlightByRow = () => {
                 <div className={`flex sticky top-0 z-20 bg-white `}>
 
                     <div className='flex flex-grow items-center justify-center border-gray-200 border-l-2 border-t-2  min-w-60 h-12  z-20'>
-                            <div className={`  `}>ACTIVITY DATA</div>
+                        <div className={` font-bold text-2xl `}>ACTIVITY DATA</div>
                     </div>
 
                     {state.datesInMonth.map((dateInMonth, i) => (
 
-                        <div className={cn(headerStyle, state.selectedColumn === i 
-                            ? "bg-sky-600 border-t-2 border-l-2 border-r-2 border-sky-600" 
-                            : "bg-gray-100 border-gray-200 border-l border-t ")}
-                            onClick={() => setState((prev) => ({ ...prev, selectedColumn: i, highlightColumn: i >= 0 && true }))}>
+                        <div className={cn(headerStyle, state.selectedColumn === i
+                            ? "bg-sky-600 border-t-2 border-l-2 border-r-2 border-sky-600"
+                            : format(new Date(), "yyyy-MM-dd") === format(dateInMonth, "yyyy-MM-dd") ? "bg-green-300 border-gray-200 border-l border-t " : "bg-gray-200 border-gray-200 border-l border-t ")}
+                            onClick={() => handleHeaderClick(i)}>
                             <div className={`flex-col `}>
                                 <p className={`text-center font-bold`}>{format(dateInMonth, "do")}</p>
                                 <p className={`text-center font-semibold`}>{format(dateInMonth, "iii")}</p>
@@ -113,63 +144,59 @@ const OuterBorderHighlightByRow = () => {
 
                 </div>
 
-                {groupedShifts.map((item, i) => (
+                {groupedData.map((group, group_i) => (
                     <>
-                    <div className={`flex`}>
-                        <div className={`flex min-w-60  h-5 border-t border-r-2 border-gray-200 items-center pl-2 sticky left-0 bg-gray-300 z-10`}>
-                            <p className={`font-semibold`}>{item.group}</p>
-                        </div>           
-                     
-                        {state.datesInMonth.map((_, i) => (
-                            <>
-                                <div className={cn(`${rowStyle} bg-gray-300`, `${state.selectedColumn === i ? "border-sky-600 border-l-2 border-r-2 border-t-gray-200 border-t" : "border-t-gray-200   border-t "}`)}
-                                    onClick={() => { }}></div>
-                            </>
+                        <div className={`flex`}>
+                            <div className={`flex min-w-60  h-5 border-t border-r-2 border-gray-200 items-center pl-2 sticky left-0 bg-gray-300 z-10`}>
+                                <p className={`font-semibold`}>{group.group}</p>
+                            </div>
+
+                            {state.datesInMonth.map((_, i) => (
+                                <>
+                                    <div className={cn(`${rowStyle} bg-gray-300`, `${state.selectedColumn === i ? "border-sky-600 border-l-2 border-r-2 border-t-gray-200 border-t" : "border-t-gray-200   border-t "}`)}
+                                        onClick={() => { }}></div>
+                                </>
+                            ))}
+
+                        </div>
+
+                        {group.activity.map((item, activity_i) => (
+
+                            <div className={`flex`}>
+
+                                <div className={`flex min-w-60 flex-grow  h-5 border-t border-r-2 border-gray-200 items-center pl-2 sticky left-0 bg-gray-100 z-10`}>
+                                    <p className={`font-semibold pl-2`}>{item.title}</p>
+                                </div>
+
+
+                                {state.datesInMonth.map((dateInMonth, i) => (
+                                    <>
+                                        <div className={cn(
+                                            rowStyle,
+                                            `hover:bg-sky-100 cursor-pointer`,
+                                            state.selectedColumn === i
+                                                ? `border-sky-600 border-l-2 border-r-2 border-t-gray-200 border-t ${groupedData.length - 1 === group_i && group.activity.length - 1 === activity_i && "border-b-2"}`
+                                                : "border-gray-200 border-l border-t")}
+                                            onClick={() => {
+                                                console.log(`Cell clicked: ${item.title}, Date: ${format(dateInMonth, "yyyy-MM-dd")}`);
+                                            }}
+                                        >
+
+                                            <p className={`text-center font-semibold`}>{item.data.find((activity) => format(toDate(activity.date), "yyyy-MM-dd") === format(dateInMonth, "yyyy-MM-dd") && activity.title === item.title)?.value}</p>
+
+                                        </div>
+                                    </>
+                                ))}
+
+                            </div>
+
+
+
                         ))}
-        
-                    </div>
 
-             {item.data.map((item, i) => (
-
-                 <div className={`flex`}>
-
-                    <div className={`flex min-w-60 flex-grow  h-5 border-t border-r-2 border-gray-200 items-center pl-2 sticky left-0 bg-gray-100 z-10`}>
-                            <p className={`font-semibold pl-2`}>{item.title}</p>
-                    </div>  
-
-
-                    {state.datesInMonth.map((dateInMonth, i) => (
-                            <>
-                                <div className={cn(`${rowStyle} hover:bg-sky-100 cursor-pointer`, `${state.selectedColumn === i ? "border-sky-600 border-l-2 border-r-2 border-t-gray-200 border-t" : "border-gray-200 border-l border-t  "}`)}
-                                    onClick={() => { }}>
-
-                                      {format(toDate(item.date),"yyyy-MM-dd") === format(dateInMonth, "yyyy-MM-dd")  ? 
-                                      <p className={`text-center font-semibold`}>{item.value}</p> : 
-                                      <p className={`text-center font-semibold`}></p>}
-
-
-                                    </div>
-                            </>
-                        ))}
-
-                 </div>
-                
-
-
-             ))}
-
-</>
+                    </>
 
                 ))}
-
-                {/* <div className={`flex`}>
-                    <div className={`min-w-40  h-5 border-b border-gray-200`}>title</div>
-                        {state.datesInMonth.map((_, i) => (
-                                            
-                                <div className={cn(`${rowStyle}`, `${state.selectedColumn === i ? "border-sky-600 border-l-2 border-r-2 border-b-2 border-t-gray-200" : "border-gray-200 border-l-2 border-t-2"}`)}
-                                onClick={() => {}}>000{i + 1}</div>
-                        ))}
-            </div> */}
 
             </div>
         </>
