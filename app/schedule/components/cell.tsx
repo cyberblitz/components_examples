@@ -37,7 +37,8 @@ type Tprops = {
 export default function Cell({ rowStyle, ParentState, groupedData, item, activity_i, group_i, dateInMonth, group, i,  selectedCell, setSelectedCell, }: Tprops) {
 
     const [state, setState] = useState({
-        editCell: false
+        editCell: false,
+        cellValue: "",
     })
 
     const isActive =  selectedCell?.activity_i === -1 &&  selectedCell?.group_i === -1 ||  selectedCell?.activity_i === activity_i && selectedCell?.group_i === group_i && format(toDate(selectedCell?.activityDate), "yyyy-MM-dd") === format(dateInMonth, "yyyy-MM-dd")
@@ -60,7 +61,7 @@ export default function Cell({ rowStyle, ParentState, groupedData, item, activit
 
     const handleAcceptClick = (e: React.MouseEvent) => {
         e.stopPropagation(); // Prevent onBlur from being called after click
-        console.log("handleAcceptClick")
+        console.log("state.cellValue:","group:" , group, "item:", item.title, state.cellValue, "selectedCell:", selectedCell)
         setSelectedCell({activity_i:-1, group_i: -1, activityDate: new Date()}); // Reset selectedCell after blur
         setState((prev) => ({ ...prev, editCell: false }));
     };
@@ -98,11 +99,11 @@ export default function Cell({ rowStyle, ParentState, groupedData, item, activit
 
                     <Input
                         //  autoFocus
-                           onBlur={handleBlur}
+                        //    onBlur={handleBlur}
                         value={item.data.find((activity) => format(toDate(activity.date), "yyyy-MM-dd") === format(dateInMonth, "yyyy-MM-dd") && activity.title === item.title)?.value}
                         className={`h-4 border-none rounded-none text-center font-semibold focus-visible:outline-none  focus-visible:ring-0  focus-visible:ring-offset-0  `}
                         onChange={(e) => {                            
-                            console.log(e.target.value);
+                            setState((prev) => ({...prev, cellValue: e.target.value}));
                         }} />
 
                     <div className={`relative right-[-10px] w-0 top-2`}> 
