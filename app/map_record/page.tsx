@@ -69,6 +69,10 @@ export default function MapRecord() {
         map.set('cherry', 3);
         console.log("map.keys():",[map.keys()]); // Output:  [ [Map Iterator] { 'apple', 'banana', 'cherry' } ]
 
+        const map1 = new Map();
+        map.set('apple', undefined);
+        console.log(map1.has('apple')); // Output: true
+
     return (
         <div>
             <h1>MapRecord</h1>

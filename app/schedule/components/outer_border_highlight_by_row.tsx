@@ -109,7 +109,7 @@ const OuterBorderHighlightByRow = () => {
             activityDate: new Date()
         },
         rowExpanded: {} as Record<string, boolean>,
-       
+        searchTerm: "",
     });
 
 
@@ -143,13 +143,24 @@ const OuterBorderHighlightByRow = () => {
         }));
     };
 
+
+
+
+
+
+
     console.log("state.selectedCell.activity_i", state.selectedCell.activity_i)
 
     return (
         <>
-            <HeaderBar selectedMonth={(datesInMonth: Date[]) => { setState((prev) => ({ ...prev, datesInMonth })) }} />
+            <HeaderBar 
+            selectedMonth={(datesInMonth: Date[]) => { setState((prev) => ({ ...prev, datesInMonth })) }} 
+            searchTerm={(term) => { setState((prev) => ({ ...prev, searchTerm: term })) }}
+            
+            
+            />
 
-            <div className="w-[calc(100vw-1rem)] h-[calc(100vh-5rem)] m-3 border border-black justify-center items-center overflow-auto">
+            <div className="w-[calc(100vw-1rem)] h-[calc(100vh-7rem)] m-3 border border-black justify-center items-center overflow-auto">
                 <div className={`flex sticky top-0 z-20 bg-white `}>
 
                     <div className='flex flex-grow items-center justify-center border-gray-200 border-l-2 border-t-2  min-w-60 h-12  z-20'>
@@ -177,7 +188,7 @@ const OuterBorderHighlightByRow = () => {
 
                         <RowHeader rowStyle={rowStyle} parentState={state} group={group} toggleRow={toggleRow} />
      
-                        {!state.rowExpanded[group.group] && group.activity.map((item, activity_i) => (
+                        {!state.rowExpanded[group.group] && group.activity.filter((a)=> a.title.toLowerCase().includes(state.searchTerm.toLowerCase())).map((item, activity_i) => (
 
                             <div className={`flex`}>
 

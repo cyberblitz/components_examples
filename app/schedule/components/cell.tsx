@@ -46,12 +46,6 @@ export default function Cell({ rowStyle, ParentState, groupedData, item, activit
     // console.log("group_i", selectedCell?.group_i)
     // console.log("isActive", isActive)
 
-    const handleBlur = () => {
-        console.log("onBlur")
-        setState((prev) => ({ ...prev, editCell: false }));
-        setSelectedCell({activity_i:-1,group_i: -1, activityDate: new Date()}); // Reset selectedCell after blur
-    };
-
     const handleXClick = (e: React.MouseEvent) => {
         e.stopPropagation(); // Prevent onBlur from being called after click
         setSelectedCell({activity_i:-1, group_i: -1, activityDate: new Date()}); // Reset selectedCell after blur
@@ -98,8 +92,9 @@ export default function Cell({ rowStyle, ParentState, groupedData, item, activit
                 <>
 
                     <Input
-                        //  autoFocus
+                          autoFocus
                         //    onBlur={handleBlur}
+                        
                         value={item.data.find((activity) => format(toDate(activity.date), "yyyy-MM-dd") === format(dateInMonth, "yyyy-MM-dd") && activity.title === item.title)?.value}
                         className={`h-4 border-none rounded-none text-center font-semibold focus-visible:outline-none  focus-visible:ring-0  focus-visible:ring-offset-0  `}
                         onChange={(e) => {                            
