@@ -82,10 +82,10 @@ export default function Cell({ rowStyle, ParentState, groupedData, item, activit
                     ? `border-sky-600 border-l-2 border-r-2  border-t-gray-200 border-t ${groupedData.length - 1 === group_i && group.activity.length - 1 === activity_i && "border-b-2"}`
                     : "border-gray-200 border-l border-t")}
             onClick={() => {
-                // if (!isActive) {
+           
                     setSelectedCell({ activity_i, group_i, activityDate: dateInMonth });
                      setState((prev) => ({ ...prev, editCell: true }));
-                //   }
+           
                 console.log(`Cell clicked: ${item.title}, Date: ${format(dateInMonth, "yyyy-MM-dd")}`);
             }}
              style={{ pointerEvents: isActive ? "auto" : "none" }}
@@ -97,7 +97,7 @@ export default function Cell({ rowStyle, ParentState, groupedData, item, activit
                 <>
 
                     <Input
-                        // autoFocus
+                        //  autoFocus
                            onBlur={handleBlur}
                         value={item.data.find((activity) => format(toDate(activity.date), "yyyy-MM-dd") === format(dateInMonth, "yyyy-MM-dd") && activity.title === item.title)?.value}
                         className={`h-4 border-none rounded-none text-center font-semibold focus-visible:outline-none  focus-visible:ring-0  focus-visible:ring-offset-0  `}
@@ -105,7 +105,7 @@ export default function Cell({ rowStyle, ParentState, groupedData, item, activit
                             console.log(e.target.value);
                         }} />
 
-                    <div className={`relative right-[-10px] w-0 top-2`}> {/* Adjust right positioning */}
+                    <div className={`relative right-[-10px] w-0 top-2`}> 
                         <div className={`flex w-10 h-10 space-x-1`}>
                             <Button size={'icon'} className={`h-6 w-6 p-1`} onClick={handleAcceptClick}> <Check size={20} color={"green"} /></Button>
                             <Button size={'icon'} className={`h-6 w-6 p-1`} onClick={handleXClick} > <X size={20} color={"red"} /></Button>

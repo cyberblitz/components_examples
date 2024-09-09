@@ -2,12 +2,10 @@
 
 import { cn } from "@/lib/utils";
 import React, { useCallback, useMemo, useState } from 'react';
-import { Button } from '../../../components/ui/button';
-import { format, isEqual, startOfMonth, startOfWeek, toDate } from 'date-fns';
+import { format, startOfMonth } from 'date-fns';
 import HeaderBar from './header_bar';
-import { Input } from '@/components/ui/input';
 import Cell from "./cell";
-
+import RowHeader from "./rowHeader";
 
 export type activityData = {
     id: number
@@ -107,7 +105,8 @@ const OuterBorderHighlightByRow = () => {
             activity_i: -1, 
             group_i: -1,
             activityDate: new Date()
-        }
+        },
+        rowExpanded: {} as Record<string, boolean>,
     });
 
 
@@ -130,6 +129,16 @@ const OuterBorderHighlightByRow = () => {
         },
         [setState]
     );
+
+    const toggleRow = (groupName: string) => {
+        setState((prev) => ({
+            ...prev,
+            rowExpanded: {
+                ...prev.rowExpanded,
+                [groupName]: !prev.rowExpanded[groupName], // Toggle expansion for the specific group
+            },
+        }));
+    };
 
     console.log("state.selectedCell.activity_i", state.selectedCell.activity_i)
 
@@ -162,21 +171,10 @@ const OuterBorderHighlightByRow = () => {
 
                 {groupedData.map((group, group_i) => (
                     <>
-                        <div className={`flex`}>
-                            <div className={`flex min-w-60  h-5 border-t border-r-2 border-gray-200 items-center pl-2 sticky left-0 bg-gray-300 z-10`}>
-                                <p className={`font-semibold`}>{group.group}</p>
-                            </div>
 
-                            {state.datesInMonth.map((_, i) => (
-                                <>
-                                    <div className={cn(`${rowStyle} bg-gray-300`, `${state.selectedColumn === i ? "border-sky-600 border-l-2 border-r-2 border-t-gray-200 border-t" : "border-t-gray-200   border-t "}`)}
-                                        onClick={() => { }}></div>
-                                </>
-                            ))}
-
-                        </div>
-
-                        {group.activity.map((item, activity_i) => (
+                        <RowHeader rowStyle={rowStyle} parentState={state} group={group} toggleRow={toggleRow} />
+     
+                        {!state.rowExpanded[group.group] && group.activity.map((item, activity_i) => (
 
                             <div className={`flex`}>
 
