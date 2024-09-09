@@ -55,7 +55,20 @@ export default function Cell({ rowStyle, ParentState, groupedData, item, activit
 
     const handleAcceptClick = (e: React.MouseEvent) => {
         e.stopPropagation(); // Prevent onBlur from being called after click
-        console.log("state.cellValue:","group:" , group, "item:", item.title, state.cellValue, "selectedCell:", selectedCell)
+
+
+        // console.log("state.cellValue:","group:" , group, "item:", item.title, state.cellValue, "selectedCell:", selectedCell)
+        console.log({
+            CellData: {
+                group: group.group,
+                title: item.title,
+                date: format(dateInMonth, "yyyy-MM-dd"),
+                value: state.cellValue
+            }
+
+    });
+
+
         setSelectedCell({activity_i:-1, group_i: -1, activityDate: new Date()}); // Reset selectedCell after blur
         setState((prev) => ({ ...prev, editCell: false }));
     };
@@ -80,8 +93,15 @@ export default function Cell({ rowStyle, ParentState, groupedData, item, activit
            
                     setSelectedCell({ activity_i, group_i, activityDate: dateInMonth });
                      setState((prev) => ({ ...prev, editCell: true }));
-           
-                console.log(`Cell clicked: ${item.title}, Date: ${format(dateInMonth, "yyyy-MM-dd")}`);
+                    console.log({
+                        CellClicked: {
+                            group: group.group,
+                            title: item.title,
+                            date: format(dateInMonth, "yyyy-MM-dd"),
+                            value: state.cellValue
+                        }
+
+                });
             }}
              style={{ pointerEvents: isActive ? "auto" : "none" }}
         >

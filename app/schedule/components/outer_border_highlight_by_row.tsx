@@ -149,7 +149,7 @@ const OuterBorderHighlightByRow = () => {
 
 
 
-    console.log("state.selectedCell.activity_i", state.selectedCell.activity_i)
+    // console.log("state.selectedCell.activity_i", state.selectedCell.activity_i)
 
     return (
         <>
