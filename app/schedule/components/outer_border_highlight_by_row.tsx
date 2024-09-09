@@ -30,6 +30,8 @@ export type SelectedCell = {
 }
 
 
+
+
 const shifts: activityData[] = [
     { id: 0,    date: '2024-09-01',     group: 'ACUITY',    title: "1:1",                   value: '10' },
     { id: 1,    date: '2024-09-01',     group: 'ACUITY',    title: "1:2",                   value: '4.5' },
@@ -107,6 +109,7 @@ const OuterBorderHighlightByRow = () => {
             activityDate: new Date()
         },
         rowExpanded: {} as Record<string, boolean>,
+       
     });
 
 
