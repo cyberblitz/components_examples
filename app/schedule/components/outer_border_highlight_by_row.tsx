@@ -33,20 +33,20 @@ export type SelectedCell = {
 
 
 const shifts: activityData[] = [
-    { id: 0,    date: '2024-09-01',     group: 'ACUITY',    title: "1:1",                   value: '10' },
-    { id: 1,    date: '2024-09-01',     group: 'ACUITY',    title: "1:2",                   value: '4.5' },
-    { id: 2,    date: '2024-09-01',     group: 'ACUITY',    title: "2:1",                   value: '9' },
-    { id: 3,    date: '2024-09-01',     group: 'STAFF',     title: "DAY SHIFT",             value: '12' },
-    { id: 4,    date: '2024-09-01',     group: 'STAFF',     title: "SICK",                  value: '15' },
-    { id: 5,    date: '2024-09-01',     group: 'KPI',       title: "OUT OF HOURS D/C",      value: '7' },
-    { id: 6,    date: '2024-09-01',     group: 'KPI',       title: "INABILITY TO ADMIT",    value: '8' },
-    { id: 8,    date: '2024-09-02',     group: 'ACUITY',    title: "1:2",                   value: '5' },
-    { id: 9,    date: '2024-09-02',     group: 'ACUITY',    title: "2:1",                   value: '10' },
-    { id: 10,   date: '2024-09-02',     group: 'STAFF',     title: "SICK",                  value: '14' },
-    { id: 11,   date: '2024-09-02',     group: 'KPI',       title: "OUT OF HOURS D/C",      value: '8' },
-    { id: 12,   date: '2024-09-02',     group: 'KPI',       title: "INABILITY TO ADMIT",    value: '9' },
-    { id: 13,   date: '2024-10-03',     group: 'ACUITY',    title: "1:2",                   value: '7' },
-    { id: 14,   date: '2024-10-03',     group: 'ACUITY',    title: "2:1",                   value: '8' },
+    { id: 0,    date: '2024-09-01',     group: 'Admission Activity',        title: "Total Admissions",            value: '6' },
+    { id: 1,    date: '2024-09-01',     group: 'Admission Activity',        title: "Total Elective Admission",    value: '0' },
+    { id: 2,    date: '2024-09-01',     group: 'Admission Activity',        title: "Emergency Admissions",        value: '6' },
+    { id: 3,    date: '2024-09-01',     group: 'Admission Activity',        title: "Discharges",                  value: '' },
+    { id: 4,    date: '2024-09-01',     group: 'ACUITY',                    title: "1:1",                         value: '15' },
+    { id: 5,    date: '2024-09-01',     group: 'ACUITY',                    title: "1:2",                         value: '7' },
+    { id: 6,    date: '2024-09-01',     group: 'ACUITY',                    title: "2:1",                       value: '8' },
+    { id: 8,    date: '2024-09-02',     group: 'ACUITY',                    title: "1:2",                   value: '5' },
+    { id: 9,    date: '2024-09-02',     group: 'ACUITY',                    title: "2:1",                   value: '10' },
+    { id: 10,   date: '2024-09-02',     group: 'STAFF',                     title: "SICK",                  value: '14' },
+    { id: 11,   date: '2024-09-02',     group: 'KPI',                       title: "OUT OF HOURS D/C",      value: '8' },
+    { id: 12,   date: '2024-09-02',     group: 'KPI',                       title: "INABILITY TO ADMIT",    value: '9' },
+    { id: 13,   date: '2024-10-03',     group: 'ACUITY',                    title: "1:2",                   value: '7' },
+    { id: 14,   date: '2024-10-03',     group: 'ACUITY',                    title: "2:1",                   value: '8' },
 
     // Add more shift data as needed...
 ];
