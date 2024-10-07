@@ -1,7 +1,4 @@
-'use client';  // Only for app directory, if using client-side rendering
 
-import { useSearchParams } from 'next/navigation';  // useParams and useSearchParams for app directory
-import { useRouter } from 'next/router';  // For pages directory
 
 export default function PostPage({
     params,
