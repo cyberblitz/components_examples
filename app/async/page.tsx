@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
 
@@ -38,6 +39,7 @@ export default function AsyncTest() {
   return (
     <>
       <div>Data: {extractedData ? JSON.stringify(extractedData) : "Loading..."}</div>
+      <Link href={`/async/1?startDate=${'2022-01-01'}&endDate=${'2022-01-02'}`}>LINK</Link>
     </>
   );
 }

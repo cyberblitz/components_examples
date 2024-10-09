@@ -5,7 +5,7 @@ export default function PostPage({
     searchParams,
   }: {
     params: { id: string };          // Dynamic route parameter 'id'
-    searchParams: { category?: string }; // Query parameter 'category'
+    searchParams: { startDate: string, endDate: string }; // Query parameter 'category'
   }) {
   // For app directory (Next.js 13)
  
@@ -21,22 +21,28 @@ export default function PostPage({
 
   // Simulate fetching a single post based on the postId
   const posts = [
-    { id: 1, title: 'Tech Post 1', content: 'Content for post 1', category: 'tech' },
-    { id: 1, title: 'Tech Post 1', content: 'Content for post 1', category: 'travel' },
-    { id: 2, title: 'Travel Post 1', content: 'Content for post 2', category: 'travel' },
+    { id: 1, title: 'Tech Post 1',      content: 'Content for post 1', category: 'tech',   startDate: '2022-01-01' },
+    { id: 1, title: 'Travel Post 1',    content: 'Content for post 1', category: 'travel', startDate: '2022-01-02'},
+    { id: 2, title: 'Travel Post 2',    content: 'Content for post 2', category: 'travel', startDate: '2022-01-03' },
   ];
 
-  const post = posts.find(post => post.id === parsedPostId && (!searchParams.category || post.category === searchParams.category));
+  const post = posts.filter(post => !searchParams.startDate || post.startDate >= searchParams.startDate && post.startDate <= searchParams.endDate);
 
-  if (!post) {
+  if (post.length === 0) {
     return <p>Post not found or category does not match</p>;
   }
 
   return (
-    <div>
-      <h1>{post.title}</h1>
-      <p>{post.content}</p>
-      <p>Category: {post.category}</p>
-    </div>
+  <>
+        {post.map((p) => 
+            <div key={p.startDate}>
+              <h1>{p.title}</h1>
+              <p>{p.content}</p>
+              <p>Category: {p.category}</p> 
+            </div>
+        )
+        }
+   </>
+  
   );
 }
