@@ -1,10 +1,11 @@
 
 
-export default function PostPage({
-    searchParams,
-  }: {
-    searchParams: { category?: string }; // Query parameter 'category'
-  }) {
+export default async function PostPage(
+  props: {
+      searchParams: Promise<{ category?: string }>; // Query parameter 'category'
+    }
+) {
+  const searchParams = await props.searchParams;
 
 
   // Simulate fetching a single post based on the postId

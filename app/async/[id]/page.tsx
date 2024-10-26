@@ -1,19 +1,20 @@
 
 
-export default function PostPage({
-    params,
-    searchParams,
-  }: {
-    params: { id: string };          // Dynamic route parameter 'id'
-    searchParams: { startDate: string, endDate: string }; // Query parameter 'category'
-  }) {
+export default async function PostPage(
+  props: {
+      params: Promise<{ id: string }>;          // Dynamic route parameter 'id'
+      searchParams: Promise<{ startDate: string, endDate: string }>; // Query parameter 'category'
+    }
+) {
+  const searchParams = await props.searchParams;
+  const params = await props.params;
   // For app directory (Next.js 13)
- 
-//   const searchParams = useSearchParams();
-  
+
+  //   const searchParams = useSearchParams();
+
   // Ensure postId is a string (handle string[] cases)
-//   const postId = Array.isArray(params.id) ? params.id[0] : params.id;
-//   const category = searchParams.get('category');
+  //   const postId = Array.isArray(params.id) ? params.id[0] : params.id;
+  //   const category = searchParams.get('category');
 
   // Parse postId to an integer
   const parsedPostId = parseInt(params.id, 10);
