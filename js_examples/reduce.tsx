@@ -7,6 +7,7 @@
   shiftCode: ShiftCode;
 }
 
+
 const shifts: Shift[] = [
   { date: '2024-08-19', staffName: "Fred FlintStone", role: 'CN', shiftCode: 'DX' },
   { date: '2024-08-20', staffName: "Fred FlintStone", role: 'CN', shiftCode: 'NX' },
@@ -16,7 +17,17 @@ const shifts: Shift[] = [
 ];
 
 
-const groupShiftsByStaff = (shifts: Shift[]): { [role: string]: { [staffName: string] : { [date: string]: Shift[] }}} => {
+//aliasnested: {[role: string]: { [staffName: string] : { [date: string]: Shift[] }}}
+type GroupedShifts = {
+  [role: string]: {
+    [staffName: string]: {
+      [date: string]: Shift[];
+    };
+  };
+};
+
+
+const groupShiftsByStaff = (shifts: Shift[]): GroupedShifts => {
     return shifts.reduce((acc, shift) => {
       if (!acc[shift.role]) {
         acc[shift.role] = {};
@@ -31,7 +42,7 @@ const groupShiftsByStaff = (shifts: Shift[]): { [role: string]: { [staffName: st
       }
       !acc[shift.role][shift.staffName][shift.date].push(shift);
       return acc;
-    }, {} as {[role: string]: { [staffName: string] : { [date: string]: Shift[] }}});
+    }, {} as GroupedShifts );
   }
 
   console.log(groupShiftsByStaff(shifts))
